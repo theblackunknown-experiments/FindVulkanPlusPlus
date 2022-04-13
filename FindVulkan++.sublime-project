@@ -1,0 +1,59 @@
+{
+	"build_systems":
+	[
+		{
+			"cmd":
+			[
+				"cmake",
+				"--build",
+				"--preset", "build-windows"
+			],
+			"env":
+			{
+				"CLICOLOR_FORCE": "1",
+			},
+			"file_regex": "^[ ]*(.+?)\\(([0-9]+)\\)[ ]*: (.*)$",
+			"name": "FindVulkan++ (Ninja)",
+			"variants":
+			[
+				{
+					"cmd":
+					[
+						"cmake",
+						"--preset", "windows-x64"
+					],
+					"name": "Configure",
+				},
+				{
+					"cmd":
+					[
+						"ninja",
+						"-C", "build/windows-x64",
+						"-t", "clean"
+					],
+					"name": "Clean",
+				},
+				{
+					"cmd":
+					[
+						"ninja",
+						"-C", "build/windows-x64",
+						"-f", "build-Debug.ninja",
+						"-k", "20",
+						"-v",
+						"$file^"
+					],
+					"name": "Single File [verbose] (Debug)",
+					"selector": "source.c++",
+				}
+			],
+			"working_dir": "$project_path",
+		}
+	],
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	]
+}
