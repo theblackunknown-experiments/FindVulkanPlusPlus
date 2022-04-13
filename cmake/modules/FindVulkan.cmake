@@ -98,6 +98,42 @@ if(WIN32)
       HINTS
         "$ENV{VULKAN_SDK}/Bin"
       )
+    find_library(Vulkan_SPIRV_TOOLS_IMPLIB
+      NAMES SPIRV-Tools-shared
+      PATHS "$ENV{VULKAN_SDK}/Lib")
+    find_file(Vulkan_SPIRV_TOOLS_LIBRARY
+      NAMES SPIRV-Tools-shared.dll
+      PATHS "$ENV{VULKAN_SDK}/Bin")
+    find_library(Vulkan_SHADERC_IMPLIB
+      NAMES shaderc_shared
+      PATHS "$ENV{VULKAN_SDK}/Lib")
+    find_file(Vulkan_SHADERC_LIBRARY
+      NAMES shaderc_shared.dll
+      PATHS "$ENV{VULKAN_SDK}/Bin")
+    find_library(Vulkan_GLSLANG_SPIRV_LIBRARY
+      NAMES SPIRV
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
+    find_library(VULKAN_GLSLANG_OGLCOMPILER_LIBRARY
+      NAMES OGLCompiler
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
+    find_library(VULKAN_GLSLANG_OSDEPENDENT_LIBRARY
+      NAMES OSDependent
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
+    find_library(Vulkan_GLSLANG_LIBRARY
+      NAMES glslang
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
     find_program(Vulkan_GLSLANG_VALIDATOR_EXECUTABLE
       NAMES glslangValidator
       HINTS
@@ -113,6 +149,42 @@ if(WIN32)
     find_program(Vulkan_GLSLC_EXECUTABLE
       NAMES glslc
       HINTS
+        "$ENV{VULKAN_SDK}/Bin32"
+      )
+    find_library(Vulkan_SPIRV_TOOLS_IMPLIB
+      NAMES SPIRV-Tools-shared
+      HINTS "$ENV{VULKAN_SDK}/Lib32")
+    find_file(Vulkan_SPIRV_TOOLS_LIBRARY
+      NAMES SPIRV-Tools-shared
+      HINTS "$ENV{VULKAN_SDK}/Bin32")
+    find_library(Vulkan_SHADERC_IMPLIB
+      NAMES shaderc_shared
+      HINTS "$ENV{VULKAN_SDK}/Lib32")
+    find_file(Vulkan_SHADERC_LIBRARY
+      NAMES shaderc_shared.dll
+      HINTS "$ENV{VULKAN_SDK}/Bin32")
+    find_library(Vulkan_GLSLANG_SPIRV_LIBRARY
+      NAMES SPIRV
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
+        "$ENV{VULKAN_SDK}/Bin32"
+      )
+    find_library(VULKAN_GLSLANG_OGLCOMPILER_LIBRARY
+      NAMES OGLCompiler
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
+        "$ENV{VULKAN_SDK}/Bin32"
+      )
+    find_library(VULKAN_GLSLANG_OSDEPENDENT_LIBRARY
+      NAMES OSDependent
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
+        "$ENV{VULKAN_SDK}/Bin32"
+      )
+    find_library(Vulkan_GLSLANG_LIBRARY
+      NAMES glslang
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
         "$ENV{VULKAN_SDK}/Bin32"
       )
     find_program(Vulkan_GLSLANG_VALIDATOR_EXECUTABLE
@@ -131,6 +203,24 @@ else()
   find_program(Vulkan_GLSLC_EXECUTABLE
     NAMES glslc
     HINTS "$ENV{VULKAN_SDK}/bin")
+  find_library(Vulkan_SPIRV_TOOLS_LIBRARY
+    NAMES SPIRV-Tools-shared
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(Vulkan_SHADERC_LIBRARY
+    NAMES shaderc_shared
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(Vulkan_GLSLANG_SPIRV_LIBRARY
+    NAMES SPIRV
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(VULKAN_GLSLANG_OGLCOMPILER_LIBRARY
+    NAMES OGLCompiler
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(VULKAN_GLSLANG_OSDEPENDENT_LIBRARY
+    NAMES OSDependent
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(Vulkan_GLSLANG_LIBRARY
+    NAMES glslang
+    HINTS "$ENV{VULKAN_SDK}/Lib")
   find_program(Vulkan_GLSLANG_VALIDATOR_EXECUTABLE
     NAMES glslangValidator
     HINTS "$ENV{VULKAN_SDK}/bin")
@@ -199,6 +289,94 @@ if(Vulkan_FOUND AND Vulkan_GLSLC_EXECUTABLE AND NOT TARGET Vulkan::glslc)
   find_package_message(Vulkan::glslc
     "Found Vulkan glslc tool: ${Vulkan_GLSLC_EXECUTABLE}"
     "[${Vulkan_GLSLC_EXECUTABLE}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND Vulkan_SPIRV_TOOLS_LIBRARY AND NOT TARGET Vulkan::SPIRV-Tools)
+  add_library(Vulkan::SPIRV-Tools SHARED IMPORTED)
+  set_target_properties(Vulkan::SPIRV-Tools PROPERTIES
+    IMPORTED_IMPLIB "${Vulkan_SPIRV_TOOLS_IMPLIB}"
+    IMPORTED_LOCATION "${Vulkan_SPIRV_TOOLS_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+  target_compile_definitions(Vulkan::SPIRV-Tools
+    INTERFACE
+      SPIRV_TOOLS_SHAREDLIB
+  )
+
+  find_package_message(Vulkan::SPIRV-Tools
+    "Found Vulkan SPIRV-Tools library: ${Vulkan_SPIRV_TOOLS_LIBRARY}"
+    "[${Vulkan_SPIRV_TOOLS_LIBRARY}][${Vulkan_SPIRV_TOOLS_IMPLIB}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND Vulkan_SHADERC_LIBRARY AND NOT TARGET Vulkan::shaderc)
+  add_library(Vulkan::shaderc SHARED IMPORTED)
+  set_target_properties(Vulkan::shaderc PROPERTIES
+    IMPORTED_IMPLIB "${Vulkan_SHADERC_IMPLIB}"
+    IMPORTED_LOCATION "${Vulkan_SHADERC_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+  target_compile_definitions(Vulkan::shaderc
+    INTERFACE
+      SHADERC_SHAREDLIB
+  )
+
+  find_package_message(Vulkan::shaderc
+    "Found Vulkan shaderc library: ${Vulkan_SHADERC_LIBRARY}"
+    "[${Vulkan_SHADERC_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang_spirv)
+  add_library(Vulkan::glslang_spirv STATIC IMPORTED)
+  set_target_properties(Vulkan::glslang_spirv PROPERTIES
+    IMPORTED_LOCATION "${Vulkan_GLSLANG_SPIRV_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::glslang_spirv
+    "Found Vulkan glslang SPIRV library: ${Vulkan_GLSLANG_SPIRV_LIBRARY}"
+    "[${Vulkan_GLSLANG_SPIRV_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang_oglcompiler)
+  add_library(Vulkan::glslang_oglcompiler STATIC IMPORTED)
+  set_target_properties(Vulkan::glslang_oglcompiler PROPERTIES
+    IMPORTED_LOCATION "${VULKAN_GLSLANG_OGLCOMPILER_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::glslang_oglcompiler
+    "Found Vulkan glslang OpenGL Compiler library: ${VULKAN_GLSLANG_OGLCOMPILER_LIBRARY}"
+    "[${VULKAN_GLSLANG_OGLCOMPILER_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang_osdependent)
+  add_library(Vulkan::glslang_osdependent STATIC IMPORTED)
+  set_target_properties(Vulkan::glslang_osdependent PROPERTIES
+    IMPORTED_LOCATION "${VULKAN_GLSLANG_OSDEPENDENT_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::glslang_osdependent
+    "Found Vulkan glslang OS-dependent library: ${VULKAN_GLSLANG_OSDEPENDENT_LIBRARY}"
+    "[${VULKAN_GLSLANG_OSDEPENDENT_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang)
+  add_library(Vulkan::glslang STATIC IMPORTED)
+  set_target_properties(Vulkan::glslang PROPERTIES
+    IMPORTED_LOCATION "${Vulkan_GLSLANG_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+  target_link_libraries(Vulkan::shaderc
+    INTERFACE
+      Vulkan::glslang_spirv
+      Vulkan::glslang_oglcompiler
+      Vulkan::glslang_osdependent
+  )
+
+  find_package_message(Vulkan::glslang
+    "Found Vulkan glslang library: ${Vulkan_GLSLANG_LIBRARY}"
+    "[${Vulkan_GLSLANG_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
   )
 endif()
 

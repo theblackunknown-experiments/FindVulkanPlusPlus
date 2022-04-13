@@ -8,20 +8,6 @@
       "installDir": "${sourceDir}/out/install/${presetName}"
     },
     {
-      "name": "vcpkg-base",
-      "hidden": true,
-      "toolchainFile": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-      "cacheVariables": {
-        "CMAKE_FIND_PACKAGE_PREFER_CONFIG": "ON"
-      }
-    },
-    {
-      "name": "variables-base",
-      "hidden": true,
-      "cacheVariables": {
-      }
-    },
-    {
       "name": "warnings-base",
       "hidden": true,
       "warnings": {
@@ -52,7 +38,7 @@
     },
     {
       "name": "linux-x64",
-      "inherits": [ "ninja", "x64", "locations-base", "vcpkg-base", "variables-base", "warnings-base" ],
+      "inherits": [ "ninja", "x64", "locations-base", "warnings-base" ],
       "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux"},
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
@@ -61,12 +47,12 @@
     },
     {
       "name": "macos-x64",
-      "inherits": [ "ninja", "x64", "locations-base", "vcpkg-base", "variables-base", "warnings-base" ],
+      "inherits": [ "ninja", "x64", "locations-base", "warnings-base" ],
       "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin"}
     },
     {
       "name": "windows-x64",
-      "inherits": [ "ninja", "x64", "locations-base", "vcpkg-base", "variables-base", "warnings-base" ],
+      "inherits": [ "ninja", "x64", "locations-base", "warnings-base" ],
       "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows"}
     }
   ],

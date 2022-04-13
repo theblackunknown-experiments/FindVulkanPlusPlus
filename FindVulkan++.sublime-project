@@ -19,6 +19,13 @@
 				{
 					"cmd":
 					[
+						"rm", "build/windows-x64/CMakeCache.txt"
+					],
+					"name": "Delete CMake Cache",
+				},
+				{
+					"cmd":
+					[
 						"cmake",
 						"--preset", "windows-x64"
 					],
@@ -32,6 +39,22 @@
 						"-t", "clean"
 					],
 					"name": "Clean",
+				},
+				{
+					"cmd":
+					[
+						"build/windows-x64/Debug/sample"
+					],
+					"name": "Sample",
+				},
+				{
+					"cmd":
+					[
+						"ninja",
+						"-C", "build/windows-x64",
+						"test"
+					],
+					"name": "Test",
 				},
 				{
 					"cmd":
