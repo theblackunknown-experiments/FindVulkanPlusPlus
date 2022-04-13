@@ -76,6 +76,7 @@ environment.
 
 #]=======================================================================]
 
+include(FindPackageMessage)
 include(FindPackageHandleStandardArgs)
 
 if(WIN32)
@@ -173,20 +174,40 @@ if(Vulkan_FOUND AND NOT TARGET Vulkan::Vulkan)
   set_target_properties(Vulkan::Vulkan PROPERTIES
     IMPORTED_LOCATION "${Vulkan_LIBRARIES}"
     INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::Vulkan
+    "Found Vulkan library: ${Vulkan_LIBRARIES}"
+    "[${Vulkan_LIBRARIES}][${Vulkan_INCLUDE_DIRS}]"
+  )
 endif()
 
 if(Vulkan_FOUND AND NOT TARGET Vulkan::Headers)
   add_library(Vulkan::Headers INTERFACE IMPORTED)
   set_target_properties(Vulkan::Headers PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::Headers
+    "Found Vulkan headers: ${Vulkan_INCLUDE_DIRS}"
+    "[${Vulkan_INCLUDE_DIRS}]"
+  )
 endif()
 
 if(Vulkan_FOUND AND Vulkan_GLSLC_EXECUTABLE AND NOT TARGET Vulkan::glslc)
   add_executable(Vulkan::glslc IMPORTED)
   set_property(TARGET Vulkan::glslc PROPERTY IMPORTED_LOCATION "${Vulkan_GLSLC_EXECUTABLE}")
+
+  find_package_message(Vulkan::glslc
+    "Found Vulkan glslc tool: ${Vulkan_GLSLC_EXECUTABLE}"
+    "[${Vulkan_GLSLC_EXECUTABLE}]"
+  )
 endif()
 
 if(Vulkan_FOUND AND Vulkan_GLSLANG_VALIDATOR_EXECUTABLE AND NOT TARGET Vulkan::glslangValidator)
   add_executable(Vulkan::glslangValidator IMPORTED)
   set_property(TARGET Vulkan::glslangValidator PROPERTY IMPORTED_LOCATION "${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}")
+
+  find_package_message(Vulkan::glslangValidator
+    "Found Vulkan glslangValidator tool: ${Vulkan_GLSLC_EXECUTABLE}"
+    "[${Vulkan_GLSLC_EXECUTABLE}]"
+  )
 endif()
