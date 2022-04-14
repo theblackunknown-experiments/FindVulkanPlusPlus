@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     std::cout << "SPIRV-Tools Version: " << spvSoftwareVersionString() << ", " << spvSoftwareVersionDetailsString() << std::endl;
     #endif
 
-    #if 0
+    #if 1
     const glslang::Version glslang_version = glslang::GetVersion();
     const char* glslang_essl_version = glslang::GetEsslVersionString();
     const char* glslang_glsl_version = glslang::GetGlslVersionString();
