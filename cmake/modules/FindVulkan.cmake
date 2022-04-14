@@ -128,6 +128,18 @@ if(WIN32)
         "$ENV{VULKAN_SDK}/Lib"
         "$ENV{VULKAN_SDK}/Bin"
       )
+    find_library(VULKAN_GLSLANG_MACHINEINDEPENDENT_LIBRARY
+      NAMES MachineIndependent
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
+    find_library(VULKAN_GLSLANG_GENERICCODEGEN_LIBRARY
+      NAMES GenericCodeGen
+      HINTS
+      "$ENV{VULKAN_SDK}/Lib"
+      "$ENV{VULKAN_SDK}/Bin"
+      )
     find_library(Vulkan_GLSLANG_LIBRARY
       NAMES glslang
       HINTS
@@ -181,6 +193,18 @@ if(WIN32)
         "$ENV{VULKAN_SDK}/Lib32"
         "$ENV{VULKAN_SDK}/Bin32"
       )
+    find_library(VULKAN_GLSLANG_MACHINEINDEPENDENT_LIBRARY
+      NAMES MachineIndependent
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
+        "$ENV{VULKAN_SDK}/Bin32"
+        )
+    find_library(VULKAN_GLSLANG_GENERICCODEGEN_LIBRARY
+      NAMES GenericCodeGen
+      HINTS
+      "$ENV{VULKAN_SDK}/Lib32"
+      "$ENV{VULKAN_SDK}/Bin32"
+      )
     find_library(Vulkan_GLSLANG_LIBRARY
       NAMES glslang
       HINTS
@@ -217,6 +241,12 @@ else()
     HINTS "$ENV{VULKAN_SDK}/Lib")
   find_library(VULKAN_GLSLANG_OSDEPENDENT_LIBRARY
     NAMES OSDependent
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(VULKAN_GLSLANG_MACHINEINDEPENDENT_LIBRARY
+    NAMES MachineIndependent
+    HINTS "$ENV{VULKAN_SDK}/Lib")
+  find_library(VULKAN_GLSLANG_GENERICCODEGEN_LIBRARY
+    NAMES GenericCodeGen
     HINTS "$ENV{VULKAN_SDK}/Lib")
   find_library(Vulkan_GLSLANG_LIBRARY
     NAMES glslang
@@ -362,6 +392,30 @@ if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang_osdependent)
   )
 endif()
 
+if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang_machineindependent)
+  add_library(Vulkan::glslang_machineindependent STATIC IMPORTED)
+  set_target_properties(Vulkan::glslang_machineindependent PROPERTIES
+    IMPORTED_LOCATION "${VULKAN_GLSLANG_MACHINEINDEPENDENT_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::glslang_machineindependent
+    "Found Vulkan glslang machine independent library: ${VULKAN_GLSLANG_MACHINEINDEPENDENT_LIBRARY}"
+    "[${VULKAN_GLSLANG_MACHINEINDEPENDENT_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
+if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang_genericcodegen)
+  add_library(Vulkan::glslang_genericcodegen STATIC IMPORTED)
+  set_target_properties(Vulkan::glslang_genericcodegen PROPERTIES
+    IMPORTED_LOCATION "${VULKAN_GLSLANG_GENERICCODEGEN_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+
+  find_package_message(Vulkan::glslang_genericcodegen
+    "Found Vulkan glslang generic code gen library: ${VULKAN_GLSLANG_GENERICCODEGEN_LIBRARY}"
+    "[${VULKAN_GLSLANG_GENERICCODEGEN_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
+  )
+endif()
+
 if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang)
   add_library(Vulkan::glslang STATIC IMPORTED)
   set_target_properties(Vulkan::glslang PROPERTIES
@@ -372,6 +426,8 @@ if(Vulkan_FOUND AND NOT TARGET Vulkan::glslang)
       Vulkan::glslang_spirv
       Vulkan::glslang_oglcompiler
       Vulkan::glslang_osdependent
+      Vulkan::glslang_machineindependent
+      Vulkan::glslang_genericcodegen
   )
 
   find_package_message(Vulkan::glslang
