@@ -98,12 +98,18 @@ if(WIN32)
       HINTS
         "$ENV{VULKAN_SDK}/Bin"
       )
-    find_library(Vulkan_SPIRV_TOOLS_IMPLIB
-      NAMES SPIRV-Tools-shared
-      PATHS "$ENV{VULKAN_SDK}/Lib")
-    find_file(Vulkan_SPIRV_TOOLS_LIBRARY
-      NAMES SPIRV-Tools-shared.dll
-      PATHS "$ENV{VULKAN_SDK}/Bin")
+    find_library(Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY
+      NAMES SPIRV-Toolsd
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
+    find_library(Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY
+      NAMES SPIRV-Tools
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib"
+        "$ENV{VULKAN_SDK}/Bin"
+      )
     find_library(Vulkan_SHADERC_DEBUG_LIBRARY
       NAMES shaderc_combinedd
       HINTS
@@ -169,12 +175,18 @@ if(WIN32)
       HINTS
         "$ENV{VULKAN_SDK}/Bin32"
       )
-    find_library(Vulkan_SPIRV_TOOLS_IMPLIB
-      NAMES SPIRV-Tools-shared
-      HINTS "$ENV{VULKAN_SDK}/Lib32")
-    find_file(Vulkan_SPIRV_TOOLS_LIBRARY
-      NAMES SPIRV-Tools-shared
-      HINTS "$ENV{VULKAN_SDK}/Bin32")
+    find_library(Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY
+      NAMES SPIRV-Toolsd
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
+        "$ENV{VULKAN_SDK}/Bin32"
+      )
+    find_library(Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY
+      NAMES SPIRV-Tools
+      HINTS
+        "$ENV{VULKAN_SDK}/Lib32"
+        "$ENV{VULKAN_SDK}/Bin32"
+      )
     find_library(Vulkan_SHADERC_DEBUG_LIBRARY
       NAMES shaderc_combinedd
       HINTS
@@ -337,20 +349,25 @@ if(Vulkan_FOUND AND Vulkan_GLSLC_EXECUTABLE AND NOT TARGET Vulkan::glslc)
   )
 endif()
 
-if(Vulkan_FOUND AND Vulkan_SPIRV_TOOLS_LIBRARY AND NOT TARGET Vulkan::SPIRV-Tools)
-  add_library(Vulkan::SPIRV-Tools SHARED IMPORTED)
+if(Vulkan_FOUND AND (Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY OR Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY) AND NOT TARGET Vulkan::SPIRV-Tools)
+  add_library(Vulkan::SPIRV-Tools STATIC IMPORTED)
+  set(config_types)
+  if(Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY)
+    list(APPEND config_types Debug)
+  endif()
+  if(Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY)
+    list(APPEND config_types Release)
+  endif()
   set_target_properties(Vulkan::SPIRV-Tools PROPERTIES
-    IMPORTED_IMPLIB "${Vulkan_SPIRV_TOOLS_IMPLIB}"
-    IMPORTED_LOCATION "${Vulkan_SPIRV_TOOLS_LIBRARY}"
+    IMPORTED_CONFIGURATIONS "${config_types}"
+    IMPORTED_LOCATION_DEBUG "${Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY}"
+    IMPORTED_LOCATION_RELEASE "${Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY}"
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
     INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
-  target_compile_definitions(Vulkan::SPIRV-Tools
-    INTERFACE
-      SPIRV_TOOLS_SHAREDLIB
-  )
 
   find_package_message(Vulkan::SPIRV-Tools
-    "Found Vulkan SPIRV-Tools library: ${Vulkan_SPIRV_TOOLS_LIBRARY}"
-    "[${Vulkan_SPIRV_TOOLS_LIBRARY}][${Vulkan_SPIRV_TOOLS_IMPLIB}][${Vulkan_INCLUDE_DIRS}]"
+    "Found Vulkan SPIRV-Tools library: ${Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY} / ${Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY}"
+    "[${Vulkan_SPIRV_TOOLS_RELEASE_LIBRARY}][${Vulkan_SPIRV_TOOLS_DEBUG_LIBRARY}][${Vulkan_INCLUDE_DIRS}]"
   )
 endif()
 
