@@ -43,9 +43,42 @@
 				{
 					"cmd":
 					[
+						"cmake",
+						"--build",
+						"--preset", "build-windows",
+						"--config", "Debug",
+						"--target", "sample"
+					],
+					"name": "Sample (Debug)",
+				},
+				{
+					"cmd":
+					[
+						"cmake",
+						"--build",
+						"--preset", "build-windows",
+						"--config", "RelWithDebInfo",
+						"--target", "sample"
+					],
+					"name": "Sample (RelWithDebInfo)",
+				},
+				{
+					"cmd":
+					[
+						"cmake",
+						"--build",
+						"--preset", "build-windows",
+						"--config", "Release",
+						"--target", "sample"
+					],
+					"name": "Sample (Release)",
+				},
+				{
+					"cmd":
+					[
 						"build/windows-x64/Debug/sample"
 					],
-					"name": "Sample",
+					"name": "Run Sample",
 				},
 				{
 					"cmd":
@@ -76,7 +109,10 @@
 	"folders":
 	[
 		{
-			"path": "."
-		}
-	]
+			"path": ".",
+		},
+		{
+			"path": "C:/VulkanSDK/1.3.204.1",
+		},
+	],
 }
